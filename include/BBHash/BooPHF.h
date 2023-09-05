@@ -19,7 +19,7 @@
 #include <unistd.h>
 #include <chrono>
 #include <thread>
-
+#include <sys/types.h>
 
 
 namespace boomphf {
