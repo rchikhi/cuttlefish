@@ -76,6 +76,7 @@ endif()
 # Here, we have some platform-specific considerations
 # of which we must take care.
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    set(L1_CACHE_LINE_SIZE 64) # failsafe
     execute_process(
         COMMAND getconf LEVEL1_DCACHE_LINESIZE
         COMMAND tr -d '\n'
