@@ -45,9 +45,9 @@ kmer_Enumeration_Stats<k> kmer_Enumerator<k>::enumerate(
         .SetCutoffMin(cutoff)
         .SetNThreads(thread_count)
         .SetStrictMemoryMode(strict_memory)
-#ifndef CF_VALIDATION_MODE
-        .SetCounterMax(counter_max)
-#endif
+//#ifndef CF_VALIDATION_MODE
+//        .SetCounterMax(counter_max)
+//#endif
         .SetOutputFileName(output_db_path)
     ;
 

@@ -25,7 +25,8 @@ Build_Params::Build_Params( const bool is_read_graph,
                             const bool path_cover,
                             const bool save_mph,
                             const bool save_buckets,
-                            const bool save_vertices
+                            const bool save_vertices,
+                            const bool save_edges
 #ifdef CF_DEVELOP_MODE
                             , const double gamma
 #endif
@@ -48,7 +49,8 @@ Build_Params::Build_Params( const bool is_read_graph,
         path_cover_(path_cover),
         save_mph_(save_mph),
         save_buckets_(save_buckets),
-        save_vertices_(save_vertices)
+        save_vertices_(save_vertices),
+        save_edges_(save_edges)
 #ifdef CF_DEVELOP_MODE
         , gamma_(gamma)
 #endif

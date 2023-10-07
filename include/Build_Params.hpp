@@ -40,6 +40,7 @@ private:
     const bool save_mph_;   // Option to save the MPH over the vertex set of the de Bruijn graph.
     const bool save_buckets_;   // Option to save the DFA-states collection of the vertices of the de Bruijn graph.
     const bool save_vertices_;  // Option to save the vertex set of the de Bruijn graph (in KMC database format).
+    const bool save_edges_;  // Option to save the edge set of the de Bruijn graph (in KMC database format).
 #ifdef CF_DEVELOP_MODE
     const double gamma_;    // The gamma parameter for the BBHash MPHF.
 #endif
@@ -94,7 +95,8 @@ public:
                     bool path_cover,
                     bool save_mph,
                     bool save_buckets,
-                    bool save_vertices
+                    bool save_vertices,
+                    bool save_edges
 #ifdef CF_DEVELOP_MODE
                     , double gamma
 #endif
@@ -265,6 +267,13 @@ public:
     {
         return save_vertices_;
     }
+
+    // Returns whether the option to save the edge set of the de Bruijn graph (in KMC database format) is specified or not.
+    bool save_edges() const
+    {
+        return save_edges_;
+    }
+
 
 
     // Returns the path to the optional file storing meta-information about the graph and cuttlefish executions.

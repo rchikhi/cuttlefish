@@ -105,7 +105,8 @@ void Read_CdBG<k>::construct()
 #ifdef CF_DEVELOP_MODE
     if(params.edge_db_path().empty())
 #endif
-    Kmer_Container<k + 1>::remove(logistics.edge_db_path());
+    if(!params.save_edges())
+    	Kmer_Container<k + 1>::remove(logistics.edge_db_path());
     
     std::chrono::high_resolution_clock::time_point t_dfa = std::chrono::high_resolution_clock::now();
     std::cout << "Computed the states of the automata. Time taken = " << std::chrono::duration_cast<std::chrono::duration<double>>(t_dfa - t_mphf).count() << " seconds.\n";
