@@ -7,7 +7,7 @@
 
 template <uint16_t k, template <uint16_t> typename T_App>
 Application<k, T_App>::Application(const Build_Params& params):
-    app_next_level(new Application<k - 2, T_App>(params)),
+    app_next_level(new Application<k - 30, T_App>(params)),
     app(params.k() == k ? new T_App<k>(params) : nullptr),
     validator(nullptr)
 {}
@@ -15,7 +15,7 @@ Application<k, T_App>::Application(const Build_Params& params):
 
 template <uint16_t k, template <uint16_t> typename T_App>
 Application<k, T_App>::Application(const Validation_Params& params):
-    app_next_level(new Application<k - 2, T_App>(params)),
+    app_next_level(new Application<k - 30, T_App>(params)),
     app(nullptr),
     validator(params.k() == k ? new Validator<k>(params): nullptr)
 {}

@@ -4,6 +4,7 @@
 #include "CdBG.hpp"
 #include "Read_CdBG_Constructor.hpp"
 #include "Read_CdBG_Extractor.hpp"
+#include "Read_CdBG_Counts.hpp"
 
 #include <iostream>
 
@@ -35,6 +36,7 @@ Thread_Pool<k>::Thread_Pool(const uint16_t thread_count, void* const dBG, const 
 
     case Task_Type::compute_states_read_space:
     case Task_Type::extract_unipaths_read_space:
+    case Task_Type::compute_counts_read_space:
         read_dBG_compaction_params.resize(thread_count);
         break;
 
@@ -105,7 +107,16 @@ void Thread_Pool<k>::task(const uint16_t thread_id)
                         process_vertices(static_cast<Kmer_SPMC_Iterator<k>*>(params.parser), params.thread_id);
                 }
                 break;
+	    
+            case Task_Type::compute_counts_read_space:
+                {
+                    const Read_dBG_Compaction_Params& params = read_dBG_compaction_params[thread_id];
+                    static_cast<Read_CdBG_Counts<k>*>(dBG)->
+                        process_edges_counts(static_cast<Kmer_SPMC_Iterator<k + 1>*>(params.parser), params.thread_id);
+                }
+                break;
             }
+
 
 
             free_thread(thread_id);
@@ -158,6 +169,15 @@ void Thread_Pool<k>::assign_output_task(const uint16_t thread_id, const char* co
 
 template <uint16_t k>
 void Thread_Pool<k>::assign_read_dBG_compaction_task(void* const parser, const uint16_t thread_id)
+{
+    read_dBG_compaction_params[thread_id] = Read_dBG_Compaction_Params(parser, thread_id);
+
+    assign_task(thread_id);
+}
+
+
+template <uint16_t k>
+void Thread_Pool<k>::assign_read_dBG_counts_task(void* const parser, const uint16_t thread_id)
 {
     read_dBG_compaction_params[thread_id] = Read_dBG_Compaction_Params(parser, thread_id);
 

@@ -13,6 +13,7 @@
 // Forward declarations.
 template <uint16_t k> class Read_CdBG_Constructor;
 template <uint16_t k> class Read_CdBG_Extractor;
+template <uint16_t k> class Read_CdBG_Counts;
 template <uint16_t k> class CdBG;
 template <uint16_t k> class Unipaths_Meta_info;
 class Build_Params;
@@ -57,6 +58,9 @@ public:
 
     // Adds basic graph structural information from `cdbg_constructor`.
     void add_basic_info(const Read_CdBG_Constructor<k>& cdbg_constructor);
+    
+    // Adds basic graph structural information from `cdbg_counts`.
+    void add_basic_info(const Read_CdBG_Counts<k>& cdbg_counts);
 
     // Adds basic graph structural information from `cdbg`.
     void add_basic_info(const CdBG<k>& cdbg);

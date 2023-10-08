@@ -53,6 +53,9 @@ public:
 
     // Returns the wrapped state-code value.
     cuttlefish::state_code_t get_state() const;
+    
+    // Sets the wrapped state-code value.
+    void set_state(cuttlefish::state_code_t code2);
 
     // Returns `true` iff some vertex having this state has been outputted.
     bool is_outputted() const;
@@ -114,6 +117,12 @@ inline void State_Read_Space::set_front_encoding(cuttlefish::edge_encoding_t edg
 inline cuttlefish::state_code_t State_Read_Space::get_state() const
 {
     return code;
+}
+
+
+inline void State_Read_Space::set_state(cuttlefish::state_code_t code2)
+{
+    code = code2;
 }
 
 

@@ -51,6 +51,12 @@ void dBG_Info<k>::add_basic_info(const Read_CdBG_Constructor<k>& cdbg_constructo
     dBg_info[basic_field]["edge count"] = cdbg_constructor.edge_count();
 }
 
+template <uint16_t k>
+void dBG_Info<k>::add_basic_info(const Read_CdBG_Counts<k>& cdbg_counts)
+{
+	// nothing for now..
+	(void)cdbg_counts;
+}
 
 template <uint16_t k>
 void dBG_Info<k>::add_basic_info(const CdBG<k>& cdbg)

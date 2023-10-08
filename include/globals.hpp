@@ -12,7 +12,7 @@
 // The macro `INSTANCE_COUNT` must be set exactly to `(MAX_K + 1) / 2` for a required maximum k-value.
 // Also, the `MAX_K` value must be odd (as the k-values used in the algorithm) for correct results.
 #ifndef INSTANCE_COUNT
-    #define INSTANCE_COUNT 32
+    #define INSTANCE_COUNT 16
 #endif
 
 
@@ -69,7 +69,10 @@ namespace cuttlefish
 
 // Enumerates all the explicit instantiations of the template class `class_name` using `instantiator`, for all
 // `x` in `[0, count)`. The `x`-value is used as appropriate by `instantiator`.
-#define ENUMERATE(count, instantiator, class_name) BOOST_PP_REPEAT(count, instantiator, class_name)
+//#define ENUMERATE(count, instantiator, class_name) BOOST_PP_REPEAT(count, instantiator, class_name)
+// HACK: we only need k=31, no need to bloat and have long compilation times
+#define ENUMERATE(count, instantiator, class_name) instantiator(0, 15, class_name)\
+						   instantiator(0, 0, class_name)
 
 // Given some `x`, explicitly instantiates two instances of the class `class_name`, with the template parameters
 // `k` = `2x + 1`, and `BITS_PER_KEY` with `BITS_PER_REF_KMER` and `BITS_PER_READ_KMER` for alternate instances;

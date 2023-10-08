@@ -234,6 +234,15 @@ void Kmer_Hash_Table<k, BITS_PER_KEY>::construct(const uint16_t thread_count, co
 
 
 template <uint16_t k, uint8_t BITS_PER_KEY>
+void Kmer_Hash_Table<k, BITS_PER_KEY>::initialize_for_counts()
+{
+    hash_table.clear_mem();
+    std::cout << "Cleared hash table in preparation for counts.\n";
+}
+
+
+
+template <uint16_t k, uint8_t BITS_PER_KEY>
 void Kmer_Hash_Table<k, BITS_PER_KEY>::clear()
 {
     if(mph != NULL)

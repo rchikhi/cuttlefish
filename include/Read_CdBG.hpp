@@ -44,9 +44,15 @@ private:
     // Constructs the Cuttlefish hash table for the `vertex_count` vertices of the graph.
     // If `load` is specified, then it is loaded from disk.
     void construct_hash_table(uint64_t vertex_count, bool load = false);
+    
+    // Prepare the hash table to be populated with counts
+    void clear_hash_table();
 
     // Computes the states of the automata, i.e. the vertices of the graph.
     void compute_DFA_states();
+    
+    // Computes the counts for the vertices of the graph.
+    void compute_counts();
 
     // Extracts the maximal unitigs from the graph.
     void extract_maximal_unitigs();

@@ -129,6 +129,9 @@ public:
     // checked at the path `mph_file_path`—if found, it is loaded from the file.
     // If `save_mph` is specified, then the MPHF is saved into the file `mph_file_path`.
     void construct(uint16_t thread_count, const std::string& working_dir_path, const std::string& mph_file_path, const bool save_mph = false);
+    
+    // Reset the hash table in preparation for storing counts.
+    void initialize_for_counts();
 
     // Returns the id / number of the bucket in the hash table that is
     // supposed to store value items for the key `kmer`.

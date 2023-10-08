@@ -28,6 +28,7 @@ public:
         output_gfa_reduced,
         compute_states_read_space,
         extract_unipaths_read_space,
+        compute_counts_read_space,
     };
 
 
@@ -97,6 +98,12 @@ public:
     // to the thread number `thread_id`; the edges (i.e. (k + 1)-mers) or vertices (i.e. k-mers),
     // respectively, are parsed using `parser`.
     void assign_read_dBG_compaction_task(void* parser, uint16_t thread_id);
+
+    // Assigns a read-dBG counts computation task,
+    // to the thread number `thread_id`; the edges (i.e. (k + 1)-mers) or vertices (i.e. k-mers),
+    // respectively, are parsed using `parser`.
+    void assign_read_dBG_counts_task(void* parser, uint16_t thread_id);
+
 
     // Waits until all the threads in the pool have completed their active tasks.
     void wait_completion() const;

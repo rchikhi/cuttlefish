@@ -20,7 +20,7 @@ class Application
 private:
 
     // Pointer to an application instance of the next `Application` class in the top-down hierarchy (on `k`).
-    Application<k - 2, T_App>* const app_next_level;
+    Application<k - 30, T_App>* const app_next_level;
 
     // Pointer to a driver object that operates with the k-value `k`.
     T_App<k>* const app;

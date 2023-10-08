@@ -25,6 +25,9 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_C_EXTENSIONS OFF)
 
+# turn on LTO.. but got some linking errors when I do, so it's off for now
+#set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
+
 # Fix minimum compiler versions.
 set(GCC_VERSION_MIN "9.1")
 set(CLANG_VERSION_MIN "9.0")

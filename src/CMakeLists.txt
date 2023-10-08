@@ -31,6 +31,7 @@ set(PROJECT_SRC
         Read_CdBG.cpp
         Read_CdBG_Constructor.cpp
         Read_CdBG_Extractor.cpp
+	Read_CdBG_Counts.cpp
         Unitig_Scratch.cpp
         Maximal_Unitig_Scratch.cpp
         Unipaths_Meta_info.cpp
@@ -39,9 +40,9 @@ set(PROJECT_SRC
         Character_Buffer_Flusher.cpp
         Progress_Tracker.cpp
         dBG_Info.cpp
-        Validator.cpp
-        Validator_Hash_Table.cpp
         Sequence_Validator.cpp
+        Validator_Hash_Table.cpp
+        Validator.cpp
         Kmers_Validator.cpp
         utility.cpp
         commands.cpp
