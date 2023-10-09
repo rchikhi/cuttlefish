@@ -31,6 +31,7 @@ Thread_Pool<k>::Thread_Pool(const uint16_t thread_count, void* const dBG, const 
     case Task_Type::output_plain:
     case Task_Type::output_gfa:
     case Task_Type::output_gfa_reduced:
+    case Task_Type::output_unitigs_with_counts:
         output_params.resize(thread_count);
         break;
 
@@ -115,7 +116,16 @@ void Thread_Pool<k>::task(const uint16_t thread_id)
                         process_edges_counts(static_cast<Kmer_SPMC_Iterator<k + 1>*>(params.parser), params.thread_id);
                 }
                 break;
+
+            case Task_Type::output_unitigs_with_counts:
+                {
+                    const Output_Task_Params& params = output_params[thread_id];
+                    static_cast<Read_CdBG_Counts<k>*>(dBG)->
+                       process_unitig_with_counts(params.thread_id, params.seq, params.seq_len, params.left_end, params.right_end);
+                }
+                break;
             }
+
 
 
 

@@ -13,7 +13,7 @@
 
 #include <cstdint>
 #include <string>
-
+#include <fstream>
 
 template <uint16_t k> class Kmer_SPMC_Iterator;
 template <uint16_t k> class Thread_Pool;
@@ -51,6 +51,7 @@ private:
     // Adds the counts for both k-mers of the edge `e = {u, v}`. Returns `false` iff operation failed
     bool populate_counts(const Edge<k>& e);
 
+    std::ofstream output_;
 
 public:
 
@@ -61,7 +62,11 @@ public:
     // Computes k-mer counts given the k+1-mer counts in the edge set at path prefix `edge_db_path`.
     void compute_counts(const std::string& edge_db_path);
 
-    
+    // Write abundances to the unitigs FASTA file.
+    void write_unitigs_mean_abundances(const std::string& unitigs_path);
+
+    // Process all unitigs and compute mean average count, writing the result to disk, replacing the original FASTA file
+    void process_unitig_with_counts(const uint16_t thread_id, const char* const seq, const size_t seq_len, const size_t dummy1, const size_t dummy2);
 };
 
 

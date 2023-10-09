@@ -29,6 +29,7 @@ public:
         compute_states_read_space,
         extract_unipaths_read_space,
         compute_counts_read_space,
+        output_unitigs_with_counts,
     };
 
 

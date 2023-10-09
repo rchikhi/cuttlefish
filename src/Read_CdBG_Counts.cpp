@@ -3,9 +3,12 @@
 #include "Edge.hpp"
 #include "Kmer_SPMC_Iterator.hpp"
 #include "Thread_Pool.hpp"
+#include "kseq/kseq.h"
+#include "Directed_Kmer.hpp"
+#include "fmt/format.h"
 
 #include <chrono>
-
+#include <filesystem>
 
 template <uint16_t k>
 Read_CdBG_Counts<k>::Read_CdBG_Counts(const Build_Params& params, Kmer_Hash_Table<k, cuttlefish::BITS_PER_READ_KMER>& hash_table):
@@ -17,8 +20,7 @@ Read_CdBG_Counts<k>::Read_CdBG_Counts(const Build_Params& params, Kmer_Hash_Tabl
 template <uint16_t k>
 void Read_CdBG_Counts<k>::compute_counts(const std::string& edge_db_path)
 {
-    // std::chrono::high_resolution_clock::time_point t_start = std::chrono::high_resolution_clock::now();
-
+    std::chrono::high_resolution_clock::time_point t_start = std::chrono::high_resolution_clock::now();
 
     const Kmer_Container<k + 1> edge_container(edge_db_path);  // Wrapper container for the edge-database.
     Kmer_SPMC_Iterator<k + 1> edge_parser(&edge_container, params.thread_count());  // Parser for the edges from the edge-database.
@@ -65,10 +67,9 @@ void Read_CdBG_Counts<k>::compute_counts(const std::string& edge_db_path)
         }
     }
 
-
-    // std::chrono::high_resolution_clock::time_point t_end = std::chrono::high_resolution_clock::now();
-    // double elapsed_seconds = std::chrono::duration_cast<std::chrono::duration<double>>(t_end - t_start).count();
-    // std::cout << "Done computing k-mer counts. Time taken = " << elapsed_seconds << " seconds.\n";
+    std::chrono::high_resolution_clock::time_point t_end = std::chrono::high_resolution_clock::now();
+    double elapsed_seconds = std::chrono::duration_cast<std::chrono::duration<double>>(t_end - t_start).count();
+    std::cout << "Done computing k-mer counts from KMC edge database. Time taken = " << elapsed_seconds << " seconds.\n";
 }
 
 
@@ -110,6 +111,100 @@ void Read_CdBG_Counts<k>::process_edges_counts(Kmer_SPMC_Iterator<k + 1>* const 
     edges_processed += edge_count;
     lock.unlock();
 }
+
+// STEP 1: declare the type of file handler and the read() function
+ KSEQ_INIT(int, read)
+
+
+template <uint16_t k>
+void Read_CdBG_Counts<k>::write_unitigs_mean_abundances(const std::string& unitigs_path)
+{
+    std::chrono::high_resolution_clock::time_point t_start = std::chrono::high_resolution_clock::now();
+
+    // STEP 2: open the file handler
+    FILE* fp = fopen(unitigs_path.c_str(), "r");
+
+    // STEP 3: initialize seq
+    kseq_t* parser = kseq_init(fileno(fp));
+
+    // Construct a thread pool.
+    const uint16_t thread_count = params.thread_count();
+    Thread_Pool<k> thread_pool(thread_count, this, Thread_Pool<k>::Task_Type::output_unitigs_with_counts);
+
+    // We're renumbering the unitigs for efficiency, not that the original numbering mattered anyway..
+    size_t unitig_id = 0;
+
+	std::string tmp_unitigs_path = unitigs_path+".tmp_abundances";
+    output_ = std::ofstream(tmp_unitigs_path);
+
+    // STEP 4: read sequence
+    while(kseq_read(parser) >= 0)
+    {
+        // Multi-threaded
+        const uint16_t idle_thread_id = thread_pool.get_idle_thread();
+        thread_pool.assign_output_task(idle_thread_id, parser->seq.s, parser->seq.l, unitig_id, 0);
+        thread_pool.wait_completion();
+        unitig_id += 1;
+    }
+
+    // Close the thread-pool.
+    thread_pool.close();
+
+    kseq_destroy(parser);
+    fclose(fp);
+    output_.close();
+
+    namespace fs = std::filesystem;
+	try {
+		if (fs::exists(unitigs_path) && fs::is_regular_file(unitigs_path)) {
+			fs::remove(unitigs_path);
+		}
+		fs::rename(tmp_unitigs_path, unitigs_path);
+	} catch (const fs::filesystem_error& e) {
+		std::cerr << "Error moving abundance-populated unitigs files: " << e.what() << std::endl;
+	}
+    
+    std::chrono::high_resolution_clock::time_point t_end = std::chrono::high_resolution_clock::now();
+    double elapsed_seconds = std::chrono::duration_cast<std::chrono::duration<double>>(t_end - t_start).count();
+    std::cout << "Done writing approximate k-mer counts to unitigs. Time taken = " << elapsed_seconds << " seconds.\n";
+}
+
+template <uint16_t k>
+void Read_CdBG_Counts<k>::process_unitig_with_counts(const uint16_t thread_id, const char* const seq, const size_t seq_len, const size_t unitig_id, const size_t dummy)
+{
+    (void)dummy; (void)thread_id; // not using these values
+    const Kmer<k> first_kmer(seq, 0);
+    Directed_Kmer<k> kmer(first_kmer);
+
+    float mean_abundance = 0;
+
+    // Scan through the k-mers one-by-one.
+    for(size_t kmer_idx = 0; kmer_idx <= seq_len - k; ++kmer_idx)
+    {
+        Kmer_Hash_Entry_API<cuttlefish::BITS_PER_READ_KMER> bucket = hash_table[kmer.canonical()];
+        uint8_t count = bucket.get_state().get_state();
+        mean_abundance += count;
+
+        if(kmer_idx < seq_len - k)
+            kmer.roll_to_next_kmer(seq[kmer_idx + k]);
+    }
+	mean_abundance /= (seq_len-k+1);
+
+	std::string buffer;
+	buffer += ">";
+	buffer += fmt::format_int(unitig_id).c_str();
+	buffer += " km:i:";
+	buffer += fmt::format_int((int)mean_abundance).c_str(); // typical case of floating precising lost because I didn't wanna bother with the fmt library
+	buffer += "\n";
+	buffer += seq;
+	buffer += "\n";
+
+    // not the most efficient.. but that'll do
+    lock.lock();
+    output_ << buffer;
+    lock.unlock();
+}
+
 
 
 // Template instantiations for the required instances.

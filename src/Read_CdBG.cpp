@@ -216,7 +216,9 @@ template <uint16_t k>
 void Read_CdBG<k>::compute_counts()
 {
     Read_CdBG_Counts<k> cdBG_counts(params, *hash_table);
+
     cdBG_counts.compute_counts(logistics.edge_db_path());
+    cdBG_counts.write_unitigs_mean_abundances(logistics.output_file_path());
 
     dbg_info.add_basic_info(cdBG_counts);
 }
