@@ -85,6 +85,7 @@ void Read_CdBG_Counts<k>::distribute_counts_computation(Kmer_SPMC_Iterator<k + 1
     }
 }
 
+
 template <uint16_t k>
 void Read_CdBG_Counts<k>::process_edges_counts(Kmer_SPMC_Iterator<k + 1>* const edge_parser, const uint16_t thread_id)
 {
@@ -92,7 +93,6 @@ void Read_CdBG_Counts<k>::process_edges_counts(Kmer_SPMC_Iterator<k + 1>* const 
 
     uint64_t edge_count = 0;    // Number of edges processed by this thread.
     uint64_t progress = 0;  // Number of edges processed by the thread; is reset at reaching 1% of its approximate workload.
-
 
     while(edge_parser->tasks_expected(thread_id))
         if(edge_parser->value_at(thread_id, e.e()))
@@ -105,16 +105,15 @@ void Read_CdBG_Counts<k>::process_edges_counts(Kmer_SPMC_Iterator<k + 1>* const 
             if(progress_tracker.track_work(++progress))
                 progress = 0;
         }
-
     
     lock.lock();
     edges_processed += edge_count;
     lock.unlock();
 }
 
-// STEP 1: declare the type of file handler and the read() function
- KSEQ_INIT(int, read)
 
+// STEP 1: declare the type of file handler and the read() function
+KSEQ_INIT(int, read)
 
 template <uint16_t k>
 void Read_CdBG_Counts<k>::write_unitigs_mean_abundances(const std::string& unitigs_path)
@@ -134,7 +133,7 @@ void Read_CdBG_Counts<k>::write_unitigs_mean_abundances(const std::string& uniti
     // We're renumbering the unitigs for efficiency, not that the original numbering mattered anyway..
     size_t unitig_id = 0;
 
-	std::string tmp_unitigs_path = unitigs_path+".tmp_abundances";
+    std::string tmp_unitigs_path = unitigs_path+".tmp_abundances";
     output_ = std::ofstream(tmp_unitigs_path);
 
     // STEP 4: read sequence
@@ -155,19 +154,20 @@ void Read_CdBG_Counts<k>::write_unitigs_mean_abundances(const std::string& uniti
     output_.close();
 
     namespace fs = std::filesystem;
-	try {
-		if (fs::exists(unitigs_path) && fs::is_regular_file(unitigs_path)) {
-			fs::remove(unitigs_path);
-		}
-		fs::rename(tmp_unitigs_path, unitigs_path);
-	} catch (const fs::filesystem_error& e) {
-		std::cerr << "Error moving abundance-populated unitigs files: " << e.what() << std::endl;
-	}
+    try {
+        if (fs::exists(unitigs_path) && fs::is_regular_file(unitigs_path)) {
+            fs::remove(unitigs_path);
+        }
+        fs::rename(tmp_unitigs_path, unitigs_path);
+    } catch (const fs::filesystem_error& e) {
+        std::cerr << "Error moving abundance-populated unitigs files: " << e.what() << std::endl;
+    }
     
     std::chrono::high_resolution_clock::time_point t_end = std::chrono::high_resolution_clock::now();
     double elapsed_seconds = std::chrono::duration_cast<std::chrono::duration<double>>(t_end - t_start).count();
     std::cout << "Done writing approximate k-mer counts to unitigs. Time taken = " << elapsed_seconds << " seconds.\n";
 }
+
 
 template <uint16_t k>
 void Read_CdBG_Counts<k>::process_unitig_with_counts(const uint16_t thread_id, const char* const seq, const size_t seq_len, const size_t unitig_id, const size_t dummy)
@@ -188,28 +188,27 @@ void Read_CdBG_Counts<k>::process_unitig_with_counts(const uint16_t thread_id, c
         if(kmer_idx < seq_len - k)
             kmer.roll_to_next_kmer(seq[kmer_idx + k]);
     }
-	mean_abundance /= (seq_len-k+1);
-	mean_abundance /= 2; 
+    mean_abundance /= (seq_len-k+1);
+    mean_abundance /= 2; 
 
-	std::string buffer;
-	buffer += ">";
-	buffer += fmt::format_int(unitig_id).c_str();
-	buffer += " ka:i:"; // ka: mean approximate k-mer abundance. 
+    std::string buffer;
+    buffer += ">";
+    buffer += fmt::format_int(unitig_id).c_str();
+    buffer += " ka:i:"; // ka: mean approximate k-mer abundance. 
                         // Highly imprecise due to 2 sources of imprecision: 
                         // - the 8 bit encoding, and also 
                         // - the extraction of k-mer counts from k+1-mer counts
                         // This results in underestimations of low counts
-	buffer += fmt::format("{:.1f}", mean_abundance); 
-	buffer += "\n";
-	buffer += seq;
-	buffer += "\n";
+    buffer += fmt::format("{:.1f}", mean_abundance); 
+    buffer += "\n";
+    buffer += seq;
+    buffer += "\n";
 
     // not the most efficient.. but that'll do
     lock.lock();
     output_ << buffer;
     lock.unlock();
 }
-
 
 
 // Template instantiations for the required instances.

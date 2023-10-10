@@ -74,6 +74,7 @@ public:
 
 };
 
+
 // inspired by Guillaum's trick in GATB
 // https://github.com/GATB/gatb-core/blob/0a9ffd598259eb13a1257ffb28236f1510dfbefc/gatb-core/src/gatb/tools/collections/impl/MapMPHF.hpp#L84
 // Convert a normal abundance value to its 8-bit encoded form
@@ -99,6 +100,7 @@ uint8_t Read_CdBG_Counts<k>::encodeAbundance(uint32_t abundance) {
     }
 }
 
+
 // Decode an 8-bit encoded abundance value back to its original form
 template <uint16_t k>
 uint32_t Read_CdBG_Counts<k>::decodeAbundance(uint8_t encoded) {
@@ -119,6 +121,7 @@ uint32_t Read_CdBG_Counts<k>::decodeAbundance(uint8_t encoded) {
     }
 }
 
+
 template <uint16_t k>
 bool Read_CdBG_Counts<k>::populate_counts(const Edge<k>& e)
 {
@@ -135,7 +138,6 @@ bool Read_CdBG_Counts<k>::populate_counts(const Edge<k>& e)
 
     return hash_table.update_concurrent(bucket_u, bucket_v);
 }
-
 
 
 #endif
