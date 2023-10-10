@@ -65,6 +65,8 @@ private:
 
 public:
 
+    uint32_t abundance;
+
     // Default constructs the k-mer with a 0-value, equivalent to "AA...A".
     Kmer();
 

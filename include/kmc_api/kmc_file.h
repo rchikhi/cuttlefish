@@ -614,6 +614,13 @@ inline void CKMC_DB::parse_kmer_buf(std::vector<std::pair<uint64_t, uint64_t>>::
 
 	// Skip counter.
 	// buf_idx += counter_size;
+    kmer.abundance = suff_buf[buf_idx++];
+    for (uint32 b = 1; b < counter_size; b++)
+    {
+        uint64 aux = 0x000000ff & suff_buf[buf_idx++];
+        aux = aux << 8 * (b);
+        kmer.abundance = aux | kmer.abundance;
+    }
 
 	// Parse KMC raw-binary k-mer data to Cuttlefish's k-mer format.
 	kmer.from_KMC_data(kmc_data);

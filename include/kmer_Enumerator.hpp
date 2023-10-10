@@ -25,7 +25,7 @@ private:
     static constexpr std::size_t min_memory = 3;    // In GB; set as per the KMC3 library requirement.
     static constexpr uint16_t bin_count = 2000;
     static constexpr uint16_t signature_len = 11;
-    static constexpr uint64_t counter_max = 1;  // The `-cs` argument for KMC3; we're not interested in the counts and `cs = 1` will trigger skipping the counts.
+    static constexpr uint64_t counter_max = 65535;  // The `-cs` argument for KMC3; we're not interested in the counts and `cs = 1` will trigger skipping the counts.
 
     KMC::Stage1Params stage1_params;    // Parameters collection for the k-mer statistics approximation step of KMC3.
     KMC::Stage1Results stage1_results;  // Results of the k-mer statistics approximation.

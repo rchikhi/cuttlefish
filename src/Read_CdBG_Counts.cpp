@@ -182,19 +182,24 @@ void Read_CdBG_Counts<k>::process_unitig_with_counts(const uint16_t thread_id, c
     for(size_t kmer_idx = 0; kmer_idx <= seq_len - k; ++kmer_idx)
     {
         Kmer_Hash_Entry_API<cuttlefish::BITS_PER_READ_KMER> bucket = hash_table[kmer.canonical()];
-        uint8_t count = bucket.get_state().get_state();
+        uint64_t count = decodeAbundance(bucket.get_state().get_state());
         mean_abundance += count;
 
         if(kmer_idx < seq_len - k)
             kmer.roll_to_next_kmer(seq[kmer_idx + k]);
     }
 	mean_abundance /= (seq_len-k+1);
+	mean_abundance /= 2; 
 
 	std::string buffer;
 	buffer += ">";
 	buffer += fmt::format_int(unitig_id).c_str();
-	buffer += " km:i:";
-	buffer += fmt::format_int((int)mean_abundance).c_str(); // typical case of floating precising lost because I didn't wanna bother with the fmt library
+	buffer += " ka:i:"; // ka: mean approximate k-mer abundance. 
+                        // Highly imprecise due to 2 sources of imprecision: 
+                        // - the 8 bit encoding, and also 
+                        // - the extraction of k-mer counts from k+1-mer counts
+                        // This results in underestimations of low counts
+	buffer += fmt::format("{:.1f}", mean_abundance); 
 	buffer += "\n";
 	buffer += seq;
 	buffer += "\n";

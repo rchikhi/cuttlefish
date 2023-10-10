@@ -48,6 +48,9 @@ public:
 
     // Returns `true` iff the edge is a loop.
     bool is_loop() const;
+
+    // Returns the abundance of the k+1-mer as recorded by KMC
+    uint32_t abundance() const;
 };
 
 
@@ -86,6 +89,10 @@ inline bool Edge<k>::is_loop() const
     return u_.canonical() == v_.canonical();
 }
 
-
+template  <uint16_t k>
+inline uint32_t Edge<k>::abundance() const
+{
+    return e_.abundance;
+}
 
 #endif

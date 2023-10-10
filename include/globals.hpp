@@ -57,7 +57,7 @@ namespace cuttlefish
 
 
     constexpr uint8_t BITS_PER_REF_KMER = 5;
-    constexpr uint8_t BITS_PER_READ_KMER = 6;
+    constexpr uint8_t BITS_PER_READ_KMER = 8;
 }
 
 
