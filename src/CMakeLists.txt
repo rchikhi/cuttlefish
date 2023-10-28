@@ -88,6 +88,12 @@ target_link_libraries(cfcore_static PRIVATE ${CMAKE_DL_LIBS})
 
 # Link the cfcore_static library to the `kmc` library.
 target_link_libraries(cfcore_static PRIVATE kmc)
+ 
+# link sratools (learned the hard way that order of those lines matters)
+target_link_libraries(cfcore_static PRIVATE ncbi-ngs-c++)
+target_link_libraries(cfcore_static PRIVATE ncbi-ngs)
+target_link_libraries(cfcore_static PRIVATE ncbi-vdb)
+target_link_libraries(cfcore_static PRIVATE ngs-c++)
 
 # Link the cfcore_static library to the `zlib` library.
 target_link_libraries(cfcore_static PRIVATE ZLIB::ZLIB)

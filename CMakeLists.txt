@@ -191,20 +191,36 @@ endif()
 message("Build system will fetch and install KMC3")
 ExternalProject_Add(prj_kmc
     DOWNLOAD_DIR        ${CMAKE_SOURCE_DIR}/external
-    DOWNLOAD_COMMAND    rm -Rf  KMC-3.2.1 && git clone --recursive https://github.com/refresh-bio/KMC.git KMC-3.2.1 && sed -i "s/ -static-libstdc++//g" KMC-3.2.1/Makefile
+    DOWNLOAD_COMMAND    rm -Rf  KMC-sra-io && git clone -b sra-io --recursive https://github.com/rchikhi/KMC.git KMC-sra-io
     PATCH_COMMAND       #patch --strip 1 < ${CMAKE_SOURCE_DIR}/patches/kmc_patch.diff
-    SOURCE_DIR          ${CMAKE_SOURCE_DIR}/external/KMC-3.2.1
+    SOURCE_DIR          ${CMAKE_SOURCE_DIR}/external/KMC-sra-io
     BUILD_IN_SOURCE     TRUE
     INSTALL_DIR         ${CMAKE_SOURCE_DIR}/external/
     CONFIGURE_COMMAND   ""
-    BUILD_COMMAND       make -j4 kmc
-    INSTALL_COMMAND     cp bin/libkmc_core.a ${EXT_LIB} &&
-                        cp include/kmc_runner.h ${EXT_INCLUDE}
+    BUILD_COMMAND       mkdir build && cd build && cmake .. && make -j8
+    INSTALL_COMMAND     cp build/kmc_core/libkmc_core.a ${EXT_LIB} &&
+                        cp build/3rd_party/ncbi/ncbi_sratools_ext-prefix/lib64/libncbi-ngs-c++.a ${EXT_LIB} &&
+                        cp build/3rd_party/ncbi/ncbi_sratools_ext-prefix/lib64/libncbi-ngs.a ${EXT_LIB} &&
+                        cp build/3rd_party/ncbi/ncbi_sratools_ext-prefix/lib64/libngs-c++.a ${EXT_LIB} &&
+                        cp build/3rd_party/ncbi/ncbi_vdb_ext-prefix/lib64/libncbi-vdb.a ${EXT_LIB} &&
+                        cp kmc_core/kmc_runner.h ${EXT_INCLUDE}
 )
 
 add_library(kmc STATIC IMPORTED)
 set_target_properties(kmc PROPERTIES IMPORTED_LOCATION ${EXT_LIB}/libkmc_core.a)
 add_dependencies(kmc prj_kmc)
+
+add_library(ncbi-vdb STATIC IMPORTED)
+set_target_properties(ncbi-vdb PROPERTIES IMPORTED_LOCATION ${EXT_LIB}/libncbi-vdb.a)
+
+add_library(ngs-c++ STATIC IMPORTED)
+set_target_properties(ngs-c++ PROPERTIES IMPORTED_LOCATION ${EXT_LIB}/libngs-c++.a)
+
+add_library(ncbi-ngs STATIC IMPORTED)
+set_target_properties(ncbi-ngs PROPERTIES IMPORTED_LOCATION ${EXT_LIB}/libncbi-ngs.a)
+
+add_library(ncbi-ngs-c++ STATIC IMPORTED)
+set_target_properties(ncbi-ngs-c++ PROPERTIES IMPORTED_LOCATION ${EXT_LIB}/libncbi-ngs-c++.a)
 
 
 # The `Debug` configuration optimizes the program for debugging and enables full debug information.
