@@ -194,7 +194,7 @@ void Read_CdBG_Counts<k>::process_unitig_with_counts(const uint16_t thread_id, c
     std::string buffer;
     buffer += ">";
     buffer += fmt::format_int(unitig_id).c_str();
-    buffer += " ka:i:"; // ka: mean approximate k-mer abundance. 
+    buffer += " ka:f:"; // ka: mean approximate k-mer abundance. 
                         // Highly imprecise due to 2 sources of imprecision: 
                         // - the 8 bit encoding, and also 
                         // - the extraction of k-mer counts from k+1-mer counts
