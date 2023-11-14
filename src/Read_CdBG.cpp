@@ -140,7 +140,7 @@ void Read_CdBG<k>::construct()
 template <uint16_t k>
 kmer_Enumeration_Stats<k + 1> Read_CdBG<k>::enumerate_edges() const
 {
-    const KMC::InputFileType ip_type = (params.is_read_graph() ? KMC::InputFileType::SRA : KMC::InputFileType::MULTILINE_FASTA);
+    const KMC::InputFileType ip_type = (params.is_read_graph() ? KMC::InputFileType::SRAU : KMC::InputFileType::MULTILINE_FASTA);
     return kmer_Enumerator<k + 1>().enumerate(
         ip_type, logistics.input_paths_collection(), params.cutoff(), params.thread_count(),
         params.max_memory(), params.strict_memory(), params.strict_memory(), bits_per_vertex,
