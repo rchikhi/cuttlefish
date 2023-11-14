@@ -22,7 +22,7 @@ namespace cuttlefish
         constexpr uint32_t CUTOFF_FREQ_REFS = 1;    // Typical assumption
         const uint16_t THREAD_COUNT = (std::thread::hardware_concurrency() ?
                                         (std::thread::hardware_concurrency()/ 4) : 8);  // A quarter of the total thread-count.
-        constexpr std::size_t MAX_MEMORY = 3;   // Set as per KMC3 stage 1 performance.
+        constexpr std::size_t MAX_MEMORY = 7;   // Set as per KMC3 stage 1 performance.
 #ifdef CF_DEVELOP_MODE
         constexpr double GAMMA = 0;
 #endif
