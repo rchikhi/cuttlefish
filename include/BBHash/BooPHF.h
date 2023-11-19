@@ -1219,7 +1219,7 @@ we need this 2-functors scheme because HashFunctors won't work with unordered_ma
 					}
 
 					nb_done++;
-					if((nb_done&1023) ==0  && _withprogress) {_progressBar.inc(nb_done,tid);nb_done=0; }
+					if((nb_done&(1023*50)) ==0  && _withprogress) {_progressBar.inc(nb_done,tid);nb_done=0; }
 
 				}
 
