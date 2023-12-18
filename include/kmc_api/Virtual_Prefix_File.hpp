@@ -64,6 +64,7 @@ inline std::size_t Virtual_Prefix_File::read_prefixes()
 {
 	const std::size_t elems_to_read = std::min(prefix_file_elem_count - prefix_chunk_end_index, buffer_elem_count);
 	const std::size_t bytes_to_read = elems_to_read * sizeof(uint64_t);
+	prefix_file_buf.resize(elems_to_read); 
 	const std::size_t bytes_read = std::fread(prefix_file_buf.data(), 1, bytes_to_read, fp);
 	
 	if(bytes_read != bytes_to_read)

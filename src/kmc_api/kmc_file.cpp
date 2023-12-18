@@ -958,7 +958,7 @@ bool CKMC_DB::GetCountersForRead_kmc1_both_strands(const std::string& read, std:
 		bool contains_N = false;
 		while (i < read_len && pos < kmer_length)
 		{
-			if (CKmerAPI::num_codes[(uchar)read[i]] < 0)
+			if (CKmerAPI::num_codes[(uchar)read[i]] == 0xFF)
 			{
 				pos = 0;
 				rev_pos = kmer_length - 1;
@@ -992,7 +992,7 @@ bool CKMC_DB::GetCountersForRead_kmc1_both_strands(const std::string& read, std:
 
 		while (i < read_len)
 		{
-			if (CKmerAPI::num_codes[(uchar)read[i]] < 0)
+			if (CKmerAPI::num_codes[(uchar)read[i]] == 0xFF)
 			{
 				pos = 0;
 				break;
@@ -1035,7 +1035,7 @@ bool CKMC_DB::GetCountersForRead_kmc1(const std::string& read, std::vector<uint3
 		bool contains_N = false;
 		while (i < read_len && pos < kmer_length)
 		{
-			if (CKmerAPI::num_codes[(uchar)read[i]] < 0)
+			if (CKmerAPI::num_codes[(uchar)read[i]] == 0xFF)
 			{
 				pos = 0;
 				kmer.clear();
@@ -1060,7 +1060,7 @@ bool CKMC_DB::GetCountersForRead_kmc1(const std::string& read, std::vector<uint3
 
 		while (i < read_len)
 		{
-			if (CKmerAPI::num_codes[(uchar)read[i]] < 0)
+			if (CKmerAPI::num_codes[(uchar)read[i]] == 0xFF)
 			{
 				pos = 0;
 				break;
