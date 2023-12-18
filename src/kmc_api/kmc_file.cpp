@@ -1093,7 +1093,7 @@ void CKMC_DB::GetSuperKmers(const std::string& transformed_read, super_kmers_t& 
 		//building first signature after 'N' or at the read beginning
 		for (uint32 j = 0; j < signature_len; ++j, ++i)
 		{
-			if (transformed_read[i] < 0)//'N'
+			if (transformed_read[i] == 0xFF)//'N'
 			{
 				contains_N = true;
 				break;
@@ -1112,7 +1112,7 @@ void CKMC_DB::GetSuperKmers(const std::string& transformed_read, super_kmers_t& 
 
 		for (; i < transformed_read.length(); ++i)
 		{
-			if (transformed_read[i] < 0)//'N'
+			if (transformed_read[i] == 0xFF)//'N'
 			{
 				if (len >= kmer_length)
 				{
