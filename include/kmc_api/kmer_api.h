@@ -258,7 +258,7 @@ protected:
 	}
 public:
 	static const char char_codes[];
-	static char num_codes[256];
+	static uchar num_codes[256];
 	static uchar rev_comp_bytes_LUT[];
 	static uint64 alignment_mask[];
 	struct _si  
@@ -266,7 +266,7 @@ public:
 		_si()
 		{
 			for (int i = 0; i < 256; i++)
-                num_codes[i] = -1;
+                num_codes[i] = 0xFF;
 			num_codes[static_cast<std::size_t>('A')] = num_codes[static_cast<std::size_t>('a')] = 0;
 			num_codes[static_cast<std::size_t>('C')] = num_codes[static_cast<std::size_t>('c')] = 1;
 			num_codes[static_cast<std::size_t>('G')] = num_codes[static_cast<std::size_t>('g')] = 2;
@@ -532,7 +532,7 @@ public:
 		uint32 len = 0;
 		for (;  kmer_string[len] != '\0' ; ++len)
 		{
-			if (num_codes[(uchar)kmer_string[len]] == -1)
+			if ((uchar)num_codes[(uchar)kmer_string[len]] == 0xFF)
 				return false;
 		}
 		return from_string_impl(kmer_string, len);
@@ -547,7 +547,7 @@ public:
 	{					
 		for (uint32 ii = 0; ii < kmer_string.size(); ++ii)
 		{
-			if (num_codes[(uchar)kmer_string[ii]] == -1)
+			if ((uchar)num_codes[(uchar)kmer_string[ii]] == 0xFF)
 				return false;
 		}
 		return from_string_impl(kmer_string.begin(), static_cast<uint32>(kmer_string.length()));		
