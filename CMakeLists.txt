@@ -1,4 +1,5 @@
 
+# =============================================================================
 
 # Specify the minimum version of CMake to use.
 # CMake can have different behaviors (policies) based on its version used.
@@ -76,8 +77,8 @@ if(CF_DEVELOP_MODE)
 endif()
 
 
-# Here, we have some platform-specific considerations
-# of which we must take care.
+# Here, we have some platform-specific considerations of which we must take
+# care.
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     execute_process(
         COMMAND getconf LEVEL1_DCACHE_LINESIZE
@@ -109,8 +110,7 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
         message(FATAL_ERROR "Unable to identify Apple Silicon processor architecture")
     endif()
 
-    # Later on, jemalloc will complain if the C compiler 
-    # hasn't been properly set.
+    # Later on, jemalloc will complain if the C compiler  hasn't been properly set.
     if(NOT CONDA_BUILD)
         set(CMAKE_C_COMPILER clang)
         set(CMAKE_CXX_COMPILER clang++)
@@ -120,23 +120,17 @@ endif()
 add_compile_definitions(L1_CACHE_LINE_SIZE=${L1_CACHE_LINE_SIZE})
 
 
-# Search the file system for the appropriate threads package for this platform, and then set
-# the `CMAKE_THREAD_LIBS_INIT` variable (and some other variables as well).
-find_package(Threads REQUIRED)  # The threads package is required for the BBHash library used in the project.
-set(THREADS_PREFER_PTHREAD_FLAG TRUE)   # The BBHash library uses `pthread`.
+# Determine the thread library of the system.
+include(FindThreads)
+if(NOT Threads_FOUND)
+    message(FATAL_ERROR "A supported threads library is required. Aborting.")
+endif()
 
 # Search and load setting for the `zlib` library. The library is required to seamlessly adapt
 # the `kseq` and the `kmc` libraries to gzip-compressed files.
 include(FindZLIB)
 if(NOT ZLIB_FOUND)
     message(FATAL_ERROR "zlib (https://zlib.net/) is required. Aborting.")
-endif()
-
-# Search and load setting for the `bzip2` library. It is required to seamlessly adapt the
-# `kmc` library to bzip-compressed files.
-include(FindBZip2)
-if(NOT BZIP2_FOUND)
-    message(FATAL_ERROR "bzip2 (https://sourceware.org/bzip2/) is required. Aborting.")
 endif()
 
 
@@ -156,7 +150,7 @@ file(MAKE_DIRECTORY ${EXT_LIB} ${EXT_INCLUDE})
 # Prepare the `jemalloc` library. It provides scalable concurrency support and better avoidance
 # of fragmentation.
 set(MALLOC_LIB "")
-set(JEMALLOC_MIN_VERSION "5.2.1")
+set(JEMALLOC_MIN_VERSION "5.3.0")
 find_package(Jemalloc ${JEMALLOC_MIN_VERSION})
 if(JEMALLOC_FOUND)
     message("Found jemalloc (v${JEMALLOC_VERSION}) in the system")
@@ -165,11 +159,11 @@ else()
     message("Build system will fetch and install jemalloc")
     ExternalProject_Add(prj_jemalloc
         DOWNLOAD_DIR        ${CMAKE_SOURCE_DIR}/external
-        DOWNLOAD_COMMAND    curl -k -L https://github.com/jemalloc/jemalloc/archive/5.2.1.tar.gz -o jemalloc-5.2.1.tar.gz &&
-                            tar -xzf jemalloc-5.2.1.tar.gz &&
-                            rm jemalloc-5.2.1.tar.gz
+        DOWNLOAD_COMMAND    curl -k -L https://github.com/jemalloc/jemalloc/archive/${JEMALLOC_MIN_VERSION}.tar.gz -o jemalloc-${JEMALLOC_MIN_VERSION}.tar.gz &&
+                            tar -xzf jemalloc-${JEMALLOC_MIN_VERSION}.tar.gz &&
+                            rm jemalloc-${JEMALLOC_MIN_VERSION}.tar.gz
 
-        SOURCE_DIR          ${CMAKE_SOURCE_DIR}/external/jemalloc-5.2.1
+        SOURCE_DIR          ${CMAKE_SOURCE_DIR}/external/jemalloc-${JEMALLOC_MIN_VERSION}
         BUILD_IN_SOURCE     TRUE
         INSTALL_DIR         ${CMAKE_SOURCE_DIR}/external
         CONFIGURE_COMMAND   sh -c "CC=${CMAKE_C_COMPILER} ./autogen.sh --disable-debug --enable-static --prefix=<INSTALL_DIR> --silent"

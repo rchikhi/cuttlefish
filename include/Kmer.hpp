@@ -282,9 +282,7 @@ template <uint16_t k>
 __attribute__((optimize("unroll-loops")))
 inline Kmer<k>::Kmer(const char* const label)
 {
-    // removed that assert because the way this funtion is used, in Kmer_Validator.cpp and now Read_CdBG_Counts.cpp, contradicts that assertion
-    //assert(std::strlen(label) == k);
-    //if (std::strlen(label) != k) {std::cout << "assert would have failed for label " << label << std::endl; }
+    assert(std::strlen(label) >= k);
 
     constexpr uint16_t packed_word_count = k / 32;
 
