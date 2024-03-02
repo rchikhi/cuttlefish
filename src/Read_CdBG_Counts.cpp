@@ -127,7 +127,7 @@ void Read_CdBG_Counts<k>::write_unitigs_mean_abundances(const std::string& uniti
     kseq_t* parser = kseq_init(fileno(fp));
 
     // Construct a thread pool.
-    const uint16_t thread_count = params.thread_count();
+    const uint16_t thread_count = params.thread_count() - 1;
     Thread_Pool<k> thread_pool(thread_count, this, Thread_Pool<k>::Task_Type::output_unitigs_with_counts);
 
     // We're renumbering the unitigs for efficiency, not that the original numbering mattered anyway..
