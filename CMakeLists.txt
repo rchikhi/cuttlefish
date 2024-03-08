@@ -182,6 +182,7 @@ endif()
 
 # Prepare the `kmc` library — required by the Cuttlefish algorithm implementation.
 # NOTE: do something more intelligent below than the -j4
+set(KMC_VERSION "v3.2.2")
 message("Build system will fetch and install KMC3")
 ExternalProject_Add(prj_kmc
     DOWNLOAD_DIR        ${CMAKE_SOURCE_DIR}/external
