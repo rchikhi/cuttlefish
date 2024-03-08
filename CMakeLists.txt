@@ -198,6 +198,9 @@ ExternalProject_Add(prj_kmc
                         cp build/3rd_party/ncbi/ncbi_sratools_ext-prefix/lib64/libngs-c++.a ${EXT_LIB} &&
                         cp build/3rd_party/ncbi/ncbi_vdb_ext-prefix/lib64/libncbi-vdb.a ${EXT_LIB} &&
                         cp kmc_core/kmc_runner.h ${EXT_INCLUDE}
+                        #    BUILD_COMMAND       make -j CC=${CMAKE_CXX_COMPILER} simde && make -j CC=${CMAKE_CXX_COMPILER} kmc
+                        #    INSTALL_COMMAND     cp bin/libkmc_core.a ${EXT_LIB} &&
+                        #                        cp include/kmc_runner.h ${EXT_INCLUDE}
 )
 
 add_library(kmc STATIC IMPORTED)
