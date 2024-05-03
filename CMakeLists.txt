@@ -192,7 +192,7 @@ ExternalProject_Add(prj_kmc
     BUILD_IN_SOURCE     TRUE
     INSTALL_DIR         ${CMAKE_SOURCE_DIR}/external/
     CONFIGURE_COMMAND   ""
-    BUILD_COMMAND       mkdir -p build && cd build && cmake .. && make -j8
+    BUILD_COMMAND       mkdir -p build && cd build && cmake .. && make -j8 kmc
     INSTALL_COMMAND     cp build/kmc_core/libkmc_core.a ${EXT_LIB} &&
                         cp build/3rd_party/ncbi/ncbi_sratools_ext-prefix/lib64/libncbi-ngs-c++.a ${EXT_LIB} &&
                         cp build/3rd_party/ncbi/ncbi_sratools_ext-prefix/lib64/libncbi-ngs.a ${EXT_LIB} &&
